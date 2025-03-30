@@ -136,3 +136,8 @@ void ParticleEmitter::spawn(float time) {
 	//
 	sys->add(particle);
 }
+
+//zander modified
+void ParticleEmitter::setP(const ofVec3f& pos) {
+	position = pos;
+}

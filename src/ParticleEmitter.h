@@ -19,7 +19,7 @@ public:
 	void start();
 	void stop();
 	void setLifespan(const float life)   { lifespan = life; }
-	void setVelocity(const ofVec3f &vel) { velocity = vel; }
+	void setVelocity(const ofVec3f& vel) { velocity = vel; }
 	void setRate(const float r) { rate = r; }
 	void setParticleRadius(const float r) { particleRadius = r; }
 	void setEmitterType(EmitterType t) { type = t; }
@@ -41,4 +41,7 @@ public:
 	int groupSize;      // number of particles to spawn in a group
 	bool createdSys;
 	EmitterType type;
+
+	//zander modified
+	void setP(const ofVec3f& pos);
 };

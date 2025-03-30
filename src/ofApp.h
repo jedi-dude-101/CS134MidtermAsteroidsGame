@@ -2,8 +2,9 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include "Particle.h"
-#include "ParticleEmitter.h"
+#include "Emitter.h"
+#include "Shape.h"
+#include "Player.cpp"
 
 
 
@@ -25,36 +26,27 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-
-		ofEasyCam    cam;
-		ParticleEmitter emitter;
-
-		// adding forces
-		//
-		TurbulenceForce *turbForce;
-		GravityForce *gravityForce;
-		ImpulseRadialForce *radialForce;
-
-
-		// some simple sliders to play with parameters
-		//
-		bool bHide;
-		ofxFloatSlider gravity;
-		ofxFloatSlider damping;
-		ofxFloatSlider radius;
-		ofxVec3Slider velocity;
-		ofxFloatSlider lifespan;
-		ofxFloatSlider rate;
-
-		//
-		// added more sliders for radial
-		//
-		ofxVec3Slider turbMin;
-		ofxVec3Slider turbMax;
-		ofxFloatSlider mass;
-		ofxFloatSlider radialForceVal;
 		
 
 
+		Emitter  *emitter = NULL;
+		Emitter* emitterArr[3] = { new Emitter(),new Emitter(),new Emitter() };
+		Player player = Player();
+
+		ofImage defaultImage;
+		ofVec3f mouse_last;
+		bool imageLoaded;
+
+		// Some basic UI
+		//
+		bool bHide;
+		ofxFloatSlider rate;
+		ofxFloatSlider life;
+		ofxVec3Slider velocity;
+		ofxLabel screenSize;
+		ofxFloatSlider scale;
+		ofxFloatSlider rotationSpeed = 3.0;
+
+		map<int, bool> keymap;
 		ofxPanel gui;
 };

@@ -2,6 +2,8 @@
 // Kevin M.Smith - CS 134 SJSU
 
 #include "ParticleSystem.h"
+#include "Player.cpp"
+
 
 void ParticleSystem::add(const Particle &p) {
 	particles.push_back(p);
@@ -30,8 +32,9 @@ void ParticleSystem::reset() {
 void ParticleSystem::update() {
 	// check if empty and just return
 	if (particles.size() == 0) return;
-
+	
 	vector<Particle>::iterator p = particles.begin();
+	vector<Particle>::iterator i = particles.begin();
 	vector<Particle>::iterator tmp;
 
 	// check which particles have exceed their lifespan and delete
@@ -68,6 +71,43 @@ void ParticleSystem::update() {
 	for (int i = 0; i < particles.size(); i++)
 		particles[i].integrate();
 
+}
+// zander modified
+void ParticleSystem::checkCollisions(Player player) {
+	// check if empty and just return
+	if (particles.size() == 0) return;
+
+	vector<Particle>::iterator p = particles.begin();
+	// zander added more iterators
+	vector<Particle>::iterator i = particles.begin();
+	ParticleSystem *other = player.gun->sys;
+	vector<Particle>::iterator j = other->particles.begin();
+	vector<Particle>::iterator tmp;
+
+	// check which particles have exceed their lifespan and delete
+	// from list.  When deleting multiple objects from a vector while
+	// traversing at the same time, we need to use an iterator.
+	//
+	while (p != particles.end()) {
+		// Zander Modified
+		while (i != particles.end()) {
+			if (p->asteroid.collided(i->asteroid)) {
+				// do something when 2 asteroid collide
+			}
+			i++;
+		}
+		if(p->asteroid.collided(player)){} // game over or reduce lives
+		while (j != other->particles.end()) {
+			if (p->asteroid.collided(j->asteroid)) {
+				for (int k = 0;k < 4;k++) {
+
+				}
+				// particles.push_back();
+			}
+			j++;
+		}
+		p++;
+	}
 }
 
 // remove all particlies within "dist" of point (not implemented as yet)

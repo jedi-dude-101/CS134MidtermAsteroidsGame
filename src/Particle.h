@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "Asteroid.cpp"
 
 class ParticleForceField;
 
@@ -21,6 +22,10 @@ public:
 	void    draw();
 	float   age();        // sec
 	ofColor color;
+	
+	// Zander Modified
+	bool isAsteroid = true;
+	Asteroid asteroid;
 };
 
 

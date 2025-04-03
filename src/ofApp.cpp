@@ -1,6 +1,27 @@
 #include "ofApp.h"
 
+// Zander Game Functions
+ofVec3f ofApp::getRandomEdgePosition(float padding) {
+	float w = ofGetWidth();
+	float h = ofGetHeight();
 
+	// Randomly select an edge (0: top, 1: right, 2: bottom, 3: left)
+	int edge = floor(ofRandom(4));
+
+	// Generate a random position on the selected edge
+	switch (edge) {
+	case 0: return ofVec3f(ofRandom(padding, w - padding), padding); // Top
+	case 1: return ofVec3f(w - padding, ofRandom(padding, h - padding)); // Right
+	case 2: return ofVec3f(ofRandom(padding, w - padding), h - padding); // Bottom
+	case 3: return ofVec3f(padding, ofRandom(padding, h - padding)); // Left
+	default: return ofVec3f(w / 2, h / 2); // Fallback (should never happen)
+	}
+}
+ofVec3f ofApp::getVectorToCenter(ofVec3f startPos) {
+	ofVec3f center(ofGetWidth() / 2.0f, ofGetHeight() / 2.0f, 0);
+	ofVec3f direction = center - startPos; // Raw vector toward center
+	return direction.normalized(); // Unit vector (length = 1)
+}
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -32,6 +53,11 @@ void ofApp::setup(){
 	// starting position = middle of screen
 	player.position = glm::vec3(ofGetWidth() / 2.0, ofGetHeight() / 2.0, 0);
 	player.createAsteroidsShip(30.0f); // 30px base size
+	
+	asteroidEmitter.setLifespan(50);
+	asteroidEmitter.setParticleRadius(50);
+	asteroidEmitter.setAsteroid(true);
+	asteroidEmitter.start();
 
 }
 
@@ -39,9 +65,15 @@ void ofApp::setup(){
 void ofApp::update() {
 	
 
-	// zander part 1
+	// zander asteroid update
+	asteroidEmitter.setP(getRandomEdgePosition());
+	asteroidEmitter.setVelocity(getVectorToCenter(asteroidEmitter.getP())*1000);
+	// asteroidEmitter.setVelocity(ofVec3f(0, 10, 0));
 	
-	// Zander part 2
+	// asteroidEmitter.setP(ofVec3f(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 0));
+	asteroidEmitter.update();
+	
+	// Zander player and gun updates
 	if (keymap[OF_KEY_UP]) { player.moveForward(); }
 	else {
 		player.mainEngine = false;
@@ -51,7 +83,7 @@ void ofApp::update() {
 	if (keymap[OF_KEY_RIGHT]) { player.rotateRight(); }
 	if (keymap[' ']) { player.fire(); }
 	
-	player.emitter->update();
+	player.gun->update();
 	player.updatePlayer();
 
 	
@@ -65,6 +97,7 @@ void ofApp::draw(){
 	//zander part 2
 	// cout << "player.draw();" << endl;
 	player.draw();
+	asteroidEmitter.draw();
 	
 	
 	

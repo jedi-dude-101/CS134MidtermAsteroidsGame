@@ -26,11 +26,10 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
-
-
-		Emitter  *emitter = NULL;
-		Emitter* emitterArr[3] = { new Emitter(),new Emitter(),new Emitter() };
+		// Zander function
+		ofVec3f getRandomEdgePosition(float padding = 0.0f);
+		ofVec3f getVectorToCenter(ofVec3f startPos);
+		ParticleEmitter asteroidEmitter;
 		Player player = Player();
 
 		ofImage defaultImage;

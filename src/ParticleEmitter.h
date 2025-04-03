@@ -3,6 +3,8 @@
 
 #include "TransformObject.h"
 #include "ParticleSystem.h"
+class Player;
+
 
 typedef enum { DirectionalEmitter, RadialEmitter, SphereEmitter } EmitterType;
 
@@ -43,5 +45,9 @@ public:
 	EmitterType type;
 
 	//zander modified
+	bool isAsteroidEmitter;
 	void setP(const ofVec3f& pos);
+	ofVec3f getP();
+	void setAsteroid(bool isAsteroidEmitter = false);
+	void checkCollisions(Player player);
 };

@@ -2,6 +2,7 @@
 //  Kevin M. Smith - CS 134 SJSU
 
 #include "ParticleEmitter.h"
+#include "Player.cpp"
 
 ParticleEmitter::ParticleEmitter() {
 	sys = new ParticleSystem();
@@ -131,6 +132,9 @@ void ParticleEmitter::spawn(float time) {
 	particle.lifespan = lifespan;
 	particle.birthtime = time;
 	particle.radius = particleRadius;
+	// Zander Modified
+	if (isAsteroidEmitter) { particle.isAsteroid = true; }
+	particle.asteroid.setup(particleRadius);
 
 	// add to system
 	//
@@ -141,3 +145,9 @@ void ParticleEmitter::spawn(float time) {
 void ParticleEmitter::setP(const ofVec3f& pos) {
 	position = pos;
 }
+ofVec3f ParticleEmitter::getP() { return position; }
+void ParticleEmitter::setAsteroid(bool a) { 
+	isAsteroidEmitter = a; 
+	sys->isAsteroid = a;
+}
+void ParticleEmitter::checkCollisions(Player player) { sys->checkCollisions(player); }

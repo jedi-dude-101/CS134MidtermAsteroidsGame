@@ -3,6 +3,7 @@
 
 #include "ofMain.h"
 #include "Particle.h"
+class Player;
 
 
 //  Pure Virtual Function Class - must be subclassed to create new forces.
@@ -27,6 +28,9 @@ public:
 	void draw();
 	vector<Particle> particles;
 	vector<ParticleForce *> forces;
+	// zander modified
+	bool isAsteroid;
+	void checkCollisions(Player player);
 };
 
 

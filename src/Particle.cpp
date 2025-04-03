@@ -15,12 +15,20 @@ Particle::Particle() {
 	damping = .99;
 	mass = 1;
 	color = ofColor::aquamarine;
+	
 }
 
 void Particle::draw() {
 	ofSetColor(color);
-	// ofSetColor(ofMap(age(), 0, lifespan, 255, 10), 0, 0);
-	ofDrawSphere(position, radius);
+	// Zander Modified
+	if (isAsteroid) {
+		asteroid.position = position;
+		asteroid.draw();
+	}
+	else {
+		// ofSetColor(ofMap(age(), 0, lifespan, 255, 10), 0, 0);
+		ofDrawSphere(position, radius);
+	}
 }
 
 // write your own integrator here.. (hint: it's only 3 lines of code)
@@ -31,7 +39,7 @@ void Particle::integrate() {
 	// interval for this step
 	//
 	float dt = 1.0 / ofGetFrameRate();
-
+	dt = (dt > 0.0f && !std::isinf(dt)) ? dt : 1.0f / 60.0f; // Zander: ensures dt is not infinity
 	// update position based on velocity
 	//
 	position += (velocity * dt);
@@ -50,6 +58,13 @@ void Particle::integrate() {
 	// clear forces on particle (they get re-added each step)
 	//
 	forces.set(0, 0, 0);
+
+	// Zander:
+	
+	if (isAsteroid) { 
+		asteroid.torque = 0;
+		asteroid.integrateRotation(); 
+	}
 }
 
 //  return age in seconds

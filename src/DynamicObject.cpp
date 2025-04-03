@@ -1,4 +1,4 @@
-
+#pragma once
 #include "ofMain.h"
 class DynamicObject {
 public:
@@ -75,7 +75,7 @@ public:
 		// Step 1: Update angular velocity with torque (a =  t / I)
 		
 		angularVelocity += torque * dt;
-
+		// cout << "angularVelocity:" << angularVelocity << endl;
 		// Step 2: Apply damping
 		angularVelocity *= angularDamping;
 

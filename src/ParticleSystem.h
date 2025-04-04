@@ -30,7 +30,7 @@ public:
 	vector<ParticleForce *> forces;
 	// zander modified
 	bool isAsteroid;
-	void checkCollisions(Player player);
+	void checkCollisions(Player& player);
 };
 
 

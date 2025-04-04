@@ -31,7 +31,7 @@ void ParticleSystem::reset() {
 
 void ParticleSystem::update() {
 	// check if empty and just return
-	if (particles.size() == 0) return;
+	if (particles.empty()) return;
 	
 	vector<Particle>::iterator p = particles.begin();
 	vector<Particle>::iterator i = particles.begin();
@@ -72,43 +72,83 @@ void ParticleSystem::update() {
 		particles[i].integrate();
 
 }
+
+
 // zander modified
-void ParticleSystem::checkCollisions(Player player) {
-	// check if empty and just return
-	if (particles.size() == 0) return;
 
-	vector<Particle>::iterator p = particles.begin();
-	// zander added more iterators
-	vector<Particle>::iterator i = particles.begin();
-	ParticleSystem *other = player.gun->sys;
-	vector<Particle>::iterator j = other->particles.begin();
-	vector<Particle>::iterator tmp;
-
-	// check which particles have exceed their lifespan and delete
-	// from list.  When deleting multiple objects from a vector while
-	// traversing at the same time, we need to use an iterator.
-	//
-	while (p != particles.end()) {
-		// Zander Modified
-		while (i != particles.end()) {
-			if (p->asteroid.collided(i->asteroid)) {
-				// do something when 2 asteroid collide
+	void ParticleSystem::checkCollisions(Player & player) {
+		
+		if (particles.empty()) return;
+		
+		// Check asteroid-player and asteroid-bullet collisions
+		for (auto p = particles.begin(); p != particles.end(); ) {
+			bool p_erased = false;
+			
+			// 1. Asteroid vs Player collision
+			if (p->asteroid.collided(player)) {
+				cout << "player took damage" << endl;
+				player.takeDamage(1);  // Handle player damage
 			}
-			i++;
-		}
-		if(p->asteroid.collided(player)){} // game over or reduce lives
-		while (j != other->particles.end()) {
-			if (p->asteroid.collided(j->asteroid)) {
-				for (int k = 0;k < 4;k++) {
 
+			// 2. Asteroid vs Bullets (from player's gun)
+			if (player.gun && player.gun->sys) { // ensures player's gun initialized correctly
+				auto& bullets = player.gun->sys->particles; // retrieve the bullets list
+				for (auto j = bullets.begin(); j != bullets.end(); ) {
+
+					if (p->asteroid.collided(j->asteroid)) { // if asteroid shot
+						cout << "asteroid shot" << endl;
+						if (p->asteroid.child) {
+							p = particles.erase(p);
+							p_erased = true;
+							break;
+						}
+						else {
+							// Split into 4 children
+							for (int k = 0; k < 4; k++) {
+								Particle child;
+								child.asteroid.child = true;
+								child.position = p->position;
+								child.velocity = p->velocity * 0.5f;  // Inherit reduced velocity
+								child.asteroid.setup(p->radius / 3.5f);
+								particles.push_back(child);
+							}
+							p = particles.erase(p);
+							p_erased = true;
+							break;
+						}
+					}
+					else {
+						++j;
+					}
 				}
-				// particles.push_back();
 			}
-			j++;
+
+			// 3. Asteroid vs Asteroid collisions (only if p wasn't erased)
+			if (!p_erased) {
+				for (auto i = next(p); i != particles.end(); ++i) {
+					if (p->asteroid.collided(i->asteroid)) {
+						// Simple elastic collision response
+						ofVec2f collisionNormal = (p->position - i->position).normalized();
+						float impulse = (p->velocity - i->velocity).dot(collisionNormal);
+
+						// Apply impulse (swap velocities along collision normal)
+						p->velocity -= impulse * collisionNormal;
+						i->velocity += impulse * collisionNormal;
+
+						// Optional: Add separation to prevent sticking
+						float overlap = (p->asteroid.radius + i->asteroid.radius) -
+							p->position.distance(i->position);
+						if (overlap > 0) {
+							ofVec2f separation = collisionNormal * overlap * 0.5f;
+							p->position += separation;
+							i->position -= separation;
+						}
+					}
+				}
+				++p;
+			}
 		}
-		p++;
 	}
-}
 
 // remove all particlies within "dist" of point (not implemented as yet)
 //

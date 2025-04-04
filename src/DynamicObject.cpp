@@ -10,7 +10,7 @@ public:
 		lifespan = 5;
 		birthtime = 0;
 		radius = .1;
-		damping = .99;
+		damping = .999;
 		mass = 1;
 		color = ofColor::aquamarine;
 	}
@@ -89,9 +89,15 @@ public:
 		return (ofGetElapsedTimeMillis() - birthtime) / 1000.0;
 	}
 	void addForce(ofVec3f force) { forces += force; }
-	bool collided(DynamicObject other) {
+
+	bool collided(const DynamicObject & other) {
+		
 		float distance = position.distance(other.position);
+		
 		float minDistance = radius + other.radius;
+		if (distance < minDistance) {
+			cout << "collided Returned True" << endl;
+		}
 		return distance < minDistance;
 	}
 };

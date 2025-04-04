@@ -14,6 +14,7 @@ public:
 	float bulletSpeed; // defines how fast bullets travel
 	float bulletDelay; // defines the minimum time between fire()
 	float lastShot; // tracks the time since the last fire();
+	int health; // health points or lives
 	ofPolyline ship;
 	ParticleEmitter* gun;
 
@@ -33,6 +34,7 @@ public:
 		ship.addVertex(ofVec3f(15, 15,0));  // Bottom rear
 		ship.close(); // Connect back to nose
 		ship.draw();
+		radius = 21;
 
 		// setup emitter turrent / gun
 		bulletSpeed = 500;
@@ -41,6 +43,7 @@ public:
 		gun->setOneShot(true);
 		gun->setLifespan(50);
 		gun->setParticleRadius(3);
+		gun->setAsteroid(true);
 		
 	}
 
@@ -110,8 +113,9 @@ public:
 		}
 		
 	}
-	bool inside(glm::vec2 p) {
-		
+	void takeDamage(int damagePoints) {
+		health -= damagePoints;
+		if(health<=0){}// game over
 	}
 
 };

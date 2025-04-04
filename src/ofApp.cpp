@@ -67,11 +67,12 @@ void ofApp::update() {
 
 	// zander asteroid update
 	asteroidEmitter.setP(getRandomEdgePosition());
-	asteroidEmitter.setVelocity(getVectorToCenter(asteroidEmitter.getP())*1000);
+	asteroidEmitter.setVelocity(getVectorToCenter(asteroidEmitter.getP())*800);
 	// asteroidEmitter.setVelocity(ofVec3f(0, 10, 0));
 	
 	// asteroidEmitter.setP(ofVec3f(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 0));
 	asteroidEmitter.update();
+	asteroidEmitter.checkCollisions(player);
 	
 	// Zander player and gun updates
 	if (keymap[OF_KEY_UP]) { player.moveForward(); }

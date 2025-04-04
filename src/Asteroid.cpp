@@ -4,15 +4,9 @@
 class Asteroid : public DynamicObject {
 public:
 	int vertices;
-	vector<Asteroid> children; // length = 4
-	bool child;
+	bool child; // defines if it is a child, used when subdividing or not
     ofPolyline asteroidShape;
-    Asteroid() {
-        child = false;
-    }
-    Asteroid(bool isChild) {
-        child = isChild;
-    }
+    
 	// when shot, split into children and set child = true;
     ofPolyline createRandomAsteroid(float radius, int points = 5) {
         ofPolyline asteroid;
@@ -24,13 +18,14 @@ public:
             asteroid.addVertex(r * cos(angle), r * sin(angle));
         }
         asteroid.close(); // Connect last point to first
-        //asteroid.draw();
+        
         return asteroid;
     }
-    void setup(float radius) {
-        // cout << "asteroid setup"<<endl;
+    void setup(float radiuse) {
+        
+        torque = 0;
         angularVelocity = 0;
-        // cout << "angular Velocity:" << angularVelocity << endl;
+        radius = radiuse;
         asteroidShape = createRandomAsteroid(radius);
 
     }
@@ -47,9 +42,5 @@ public:
         asteroidShape.draw();
         ofPopMatrix();
 	}
-    void subDivide() {
-        for (int i = 0;i < 4;i++) {
-            children[i] = new Asteroid(true);
-        }
-    }
+    
 };

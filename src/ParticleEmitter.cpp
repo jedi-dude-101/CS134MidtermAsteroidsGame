@@ -150,4 +150,4 @@ void ParticleEmitter::setAsteroid(bool a) {
 	isAsteroidEmitter = a; 
 	sys->isAsteroid = a;
 }
-void ParticleEmitter::checkCollisions(Player player) { sys->checkCollisions(player); }
+void ParticleEmitter::checkCollisions(Player & player) { sys->checkCollisions(player); }

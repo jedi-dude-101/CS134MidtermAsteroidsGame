@@ -23,6 +23,7 @@ void Particle::draw() {
 	// Zander Modified
 	if (isAsteroid) {
 		asteroid.position = position;
+		asteroid.radius = radius;
 		asteroid.draw();
 	}
 	else {
@@ -62,7 +63,6 @@ void Particle::integrate() {
 	// Zander:
 	
 	if (isAsteroid) { 
-		asteroid.torque = 0;
 		asteroid.integrateRotation(); 
 	}
 }

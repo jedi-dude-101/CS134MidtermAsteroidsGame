@@ -49,5 +49,5 @@ public:
 	void setP(const ofVec3f& pos);
 	ofVec3f getP();
 	void setAsteroid(bool isAsteroidEmitter = false);
-	void checkCollisions(Player player);
+	void checkCollisions(Player & player);
 };

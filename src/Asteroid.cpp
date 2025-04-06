@@ -30,14 +30,8 @@ public:
 
     }
 	void draw() {
-        
-        // cout << "Torque:" << torque << endl;
-        // cout << "angularVelocity:" << angularVelocity << endl;
         ofPushMatrix();
-        // cout << position.x << " , " << position.y << endl;
         ofMultMatrix(getTransform());
-
-        // Draw main ship
         ofSetColor(color);
         asteroidShape.draw();
         ofPopMatrix();

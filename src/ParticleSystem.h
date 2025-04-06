@@ -3,6 +3,7 @@
 
 #include "ofMain.h"
 #include "Particle.h"
+#include "SoundManager.cpp"
 class Player;
 
 
@@ -30,7 +31,7 @@ public:
 	vector<ParticleForce *> forces;
 	// zander modified
 	bool isAsteroid;
-	void checkCollisions(Player& player);
+	void checkCollisions(Player& player, SoundManager& sounds);
 };
 
 

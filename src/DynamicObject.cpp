@@ -95,9 +95,7 @@ public:
 		float distance = position.distance(other.position);
 		
 		float minDistance = radius + other.radius;
-		if (distance < minDistance) {
-			cout << "collided Returned True" << endl;
-		}
+		
 		return distance < minDistance;
 	}
 };

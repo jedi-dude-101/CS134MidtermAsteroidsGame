@@ -134,6 +134,7 @@ void ParticleEmitter::spawn(float time) {
 	particle.radius = particleRadius;
 	// Zander Modified
 	if (isAsteroidEmitter) { particle.isAsteroid = true; }
+	particle.asteroid.child = false;
 	particle.asteroid.setup(particleRadius);
 
 	// add to system
@@ -150,4 +151,4 @@ void ParticleEmitter::setAsteroid(bool a) {
 	isAsteroidEmitter = a; 
 	sys->isAsteroid = a;
 }
-void ParticleEmitter::checkCollisions(Player & player) { sys->checkCollisions(player); }
+void ParticleEmitter::checkCollisions(Player & player,SoundManager& sounds) { sys->checkCollisions(player,sounds); }

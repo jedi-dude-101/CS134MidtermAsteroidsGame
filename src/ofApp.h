@@ -5,8 +5,10 @@
 #include "Emitter.h"
 #include "Shape.h"
 #include "Player.cpp"
+#include "SoundManager.cpp"
 
 
+enum GameState { START_SCREEN, PLAYING, GAME_OVER };
 
 class ofApp : public ofBaseApp{
 
@@ -26,15 +28,18 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+
 		// Zander function
 		ofVec3f getRandomEdgePosition(float padding = 0.0f);
 		ofVec3f getVectorToCenter(ofVec3f startPos);
 		ParticleEmitter asteroidEmitter;
-		Player player = Player();
-
-		ofImage defaultImage;
+		SoundManager soundm;
+		Player player = Player(soundm);
+		GameState currentState = START_SCREEN;
+		
+		
 		ofVec3f mouse_last;
-		bool imageLoaded;
+		
 
 		// Some basic UI
 		//

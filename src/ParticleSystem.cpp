@@ -76,76 +76,80 @@ void ParticleSystem::update() {
 
 // zander modified
 
-	void ParticleSystem::checkCollisions(Player & player) {
+	void ParticleSystem::checkCollisions(Player & player, SoundManager& sounds) {
 		
 		if (particles.empty()) return;
 		
 		// Check asteroid-player and asteroid-bullet collisions
-		for (auto p = particles.begin(); p != particles.end(); ) {
-			bool p_erased = false;
+		for (size_t i = 0; i < particles.size(); ) {
+			Particle& p1 = particles[i];
+			bool i_erased = false;
 			
 			// 1. Asteroid vs Player collision
-			if (p->asteroid.collided(player)) {
-				cout << "player took damage" << endl;
+			if (p1.asteroid.collided(player)) {
+				sounds.play("Explosion");
 				player.takeDamage(1);  // Handle player damage
 			}
 
 			// 2. Asteroid vs Bullets (from player's gun)
 			if (player.gun && player.gun->sys) { // ensures player's gun initialized correctly
 				auto& bullets = player.gun->sys->particles; // retrieve the bullets list
-				for (auto j = bullets.begin(); j != bullets.end(); ) {
+				for (size_t j = 0; j<bullets.size(); ) {
 
-					if (p->asteroid.collided(j->asteroid)) { // if asteroid shot
-						cout << "asteroid shot" << endl;
-						if (p->asteroid.child) {
-							p = particles.erase(p);
-							p_erased = true;
-							break;
-						}
-						else {
-							// Split into 4 children
+					if (p1.asteroid.collided(bullets[j].asteroid)) { // if asteroid shot
+						sounds.play("Explosion");
+						bullets.erase(bullets.begin() + j);
+						if (!p1.asteroid.child) {
 							for (int k = 0; k < 4; k++) {
+
 								Particle child;
+								child.lifespan = 10;
+								child.birthtime = ofGetElapsedTimeMillis();
+								float childRadius = p1.radius / 3.5f;
+								child.radius = childRadius;
 								child.asteroid.child = true;
-								child.position = p->position;
-								child.velocity = p->velocity * 0.5f;  // Inherit reduced velocity
-								child.asteroid.setup(p->radius / 3.5f);
+								child.position = p1.position + ofVec3f(k * childRadius * 3.0f, k * childRadius * 3.0f, 0);
+								child.velocity = (p1.velocity.length() * ofVec3f(ofRandom(-1, 1), ofRandom(-1, 1), 0)) * 1.5f;  // Inherit reduced velocity
+								child.asteroid.setup(childRadius);
 								particles.push_back(child);
 							}
-							p = particles.erase(p);
-							p_erased = true;
-							break;
+
 						}
+						particles.erase(particles.begin() + i);
+						i_erased = true;
+						break;
 					}
 					else {
-						++j;
+						++j; // next bullet
 					}
 				}
 			}
 
 			// 3. Asteroid vs Asteroid collisions (only if p wasn't erased)
-			if (!p_erased) {
-				for (auto i = next(p); i != particles.end(); ++i) {
-					if (p->asteroid.collided(i->asteroid)) {
-						// Simple elastic collision response
-						ofVec2f collisionNormal = (p->position - i->position).normalized();
-						float impulse = (p->velocity - i->velocity).dot(collisionNormal);
+			if (!i_erased) {
+				for (size_t j = i + 1; j < particles.size(); ) {
+					Particle& p2 = particles[j];
+					bool j_erased = false;
 
-						// Apply impulse (swap velocities along collision normal)
-						p->velocity -= impulse * collisionNormal;
-						i->velocity += impulse * collisionNormal;
+					if (p1.asteroid.collided(p2.asteroid)) {
+						// Elastic collision response
+						ofVec2f collisionNormal = (p1.position - p2.position).normalized();
+						float impulse = (p1.velocity - p2.velocity).dot(collisionNormal);
 
-						// Optional: Add separation to prevent sticking
-						float overlap = (p->asteroid.radius + i->asteroid.radius) -
-							p->position.distance(i->position);
+						p1.velocity -= impulse * collisionNormal * 0.8f; // 0.8 = elasticity
+						p2.velocity += impulse * collisionNormal * 0.8f;
+
+						// Positional correction to prevent sticking
+						float overlap = (p1.radius + p2.radius) - p1.position.distance(p2.position);
 						if (overlap > 0) {
 							ofVec2f separation = collisionNormal * overlap * 0.5f;
-							p->position += separation;
-							i->position -= separation;
+							p1.position += separation;
+							p2.position -= separation;
 						}
 					}
+					j++;
 				}
-				++p;
+				i++;
 			}
 		}
 	}

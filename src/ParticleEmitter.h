@@ -3,10 +3,12 @@
 
 #include "TransformObject.h"
 #include "ParticleSystem.h"
+#include "SoundManager.cpp"
 class Player;
 
 
 typedef enum { DirectionalEmitter, RadialEmitter, SphereEmitter } EmitterType;
+
 
 //  General purpose Emitter class for emitting sprites
 //  This works similar to a Particle emitter
@@ -49,5 +51,5 @@ public:
 	void setP(const ofVec3f& pos);
 	ofVec3f getP();
 	void setAsteroid(bool isAsteroidEmitter = false);
-	void checkCollisions(Player & player);
+	void checkCollisions(Player & player, SoundManager& sounds);
 };

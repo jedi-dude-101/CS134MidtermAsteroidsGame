@@ -28,16 +28,6 @@ void ofApp::setup(){
 
 	ofSetVerticalSync(true);
 
-	// create an image for sprites being spawned by emitter
-	//
-	/*if (defaultImage.load("images/space-invaders-ship-scaled.png")) {
-		imageLoaded = true;
-	}
-	else {
-		cout << "Can't open image file" << endl;
-		ofExit();
-	}*/
-
 	ofSetBackgroundColor(ofColor::black);
 
 	
@@ -50,12 +40,16 @@ void ofApp::setup(){
 	gui.add(rotationSpeed.setup("Rotation Speed (deg/Frame)", 0, 0, 10));
 
 	bHide = false;
+
+	soundm.load();
 	// starting position = middle of screen
 	player.position = glm::vec3(ofGetWidth() / 2.0, ofGetHeight() / 2.0, 0);
 	player.createAsteroidsShip(30.0f); // 30px base size
 	
-	asteroidEmitter.setLifespan(50);
-	asteroidEmitter.setParticleRadius(50);
+	asteroidEmitter.setLifespan(10);
+	asteroidEmitter.setParticleRadius(40);
+	asteroidEmitter.radius = 40;
+	asteroidEmitter.visible = true;
 	asteroidEmitter.setAsteroid(true);
 	asteroidEmitter.start();
 
@@ -67,12 +61,12 @@ void ofApp::update() {
 
 	// zander asteroid update
 	asteroidEmitter.setP(getRandomEdgePosition());
-	asteroidEmitter.setVelocity(getVectorToCenter(asteroidEmitter.getP())*800);
+	asteroidEmitter.setVelocity(getVectorToCenter(asteroidEmitter.getP())*600);
 	// asteroidEmitter.setVelocity(ofVec3f(0, 10, 0));
 	
 	// asteroidEmitter.setP(ofVec3f(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 0));
 	asteroidEmitter.update();
-	asteroidEmitter.checkCollisions(player);
+	asteroidEmitter.checkCollisions(player,soundm);
 	
 	// Zander player and gun updates
 	if (keymap[OF_KEY_UP]) { player.moveForward(); }
